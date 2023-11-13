@@ -17,7 +17,7 @@ namespace escapeRoom.Controllers
         //    return new string[] { "value1", "value2" };
         //}
 
-        private static List<Cards_Class> cardsList = new List<Cards_Class>() { };
+
 
         // GET api/<Cards>/5
         //[HttpGet("{id}")]
@@ -35,11 +35,19 @@ namespace escapeRoom.Controllers
         //    return Ok("sorry! all the cards saled out");
         //}
 
+
+        private DataContext context;
+        public Cards(DataContext context)
+        {
+            this.context = context;
+        }
+
+
         // POST api/<Cards>
         [HttpPost]
         public ActionResult Post([FromBody] int idCustomer, int idRoom, int count)
         {
-            Room_class r = Rooms.roomsList.Find(x => x.Id == idRoom);
+            Room_class r = /*Rooms.*/context.roomsList.Find(x => x.Id == idRoom);
             if (r == null)
             {
                 return NotFound();
@@ -47,7 +55,7 @@ namespace escapeRoom.Controllers
             if (r.IsOpen == true && r.IsFull(0) < 20)
             {
                 Cards_Class card = new Cards_Class(idCustomer, count, idRoom);
-                cardsList.Add(card);
+                context.cardsList.Add(card);
                 r.IsFull(count);
                 return Ok("the card added successfully!");
             }
@@ -60,7 +68,7 @@ namespace escapeRoom.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] int count)
         {
-            Cards_Class card = cardsList.Find(x => x.IdCard == id);
+            Cards_Class card = context.cardsList.Find(x => x.IdCard == id);
             if (card == null)
             {
                 return NotFound();
@@ -73,12 +81,12 @@ namespace escapeRoom.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            Cards_Class card = cardsList.Find(x => x.IdCard == id);
+            Cards_Class card = context.cardsList.Find(x => x.IdCard == id);
             if (card == null)
             {
                 return NotFound();
             }
-            cardsList.Remove(card);
+            context.cardsList.Remove(card);
             return Ok("the card removed successfully!");
         }
     }

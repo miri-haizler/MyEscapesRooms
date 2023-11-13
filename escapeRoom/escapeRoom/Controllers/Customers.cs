@@ -10,20 +10,26 @@ namespace escapeRoom.Controllers
     public class Customers : ControllerBase
     {
 
-        private static List<Coustomers_class> customersList=new List<Coustomers_class>() { 
-        new Coustomers_class(123,"Brachi","Dinkel"), new Coustomers_class(456,"Miri","Haizler"), new Coustomers_class(789,"Sara","Cohen"), new Coustomers_class(258,"Lea","Levi")};
+     //   private DataContext context2;
+        private DataContext context;
+        public Customers(DataContext context)
+        {
+            this.context = context;
+        }
+
+
         // GET: api/<Customers>
         [HttpGet]
         public IEnumerable<Coustomers_class> Get()
         {
-            return customersList;
+            return context.customersList;
         }
 
         // GET api/<Customers>/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            Coustomers_class customer= customersList.Find(x => x.Id == id);
+            Coustomers_class customer= context.customersList.Find(x => x.Id == id);
             if (customer==null)
             {
                 return NotFound(); 
@@ -35,7 +41,7 @@ namespace escapeRoom.Controllers
         [HttpPost]
         public void Post([FromBody] Coustomers_class value)
         {
-            customersList.Add(value);
+            context.customersList.Add(value);
         }
 
         // PUT api/<Customers>/5
@@ -43,7 +49,7 @@ namespace escapeRoom.Controllers
         public ActionResult Put(int id, [FromBody] Coustomers_class cust)
         {
 
-            var update = customersList.Find(x => x.Id == id);
+            var update = context.customersList.Find(x => x.Id == id);
             if (update == null)
             {
                return NoContent();
@@ -58,12 +64,13 @@ namespace escapeRoom.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var t = customersList.Find(x => x.Id == id);
+            var t = context.customersList.Find(x => x.Id == id);
             if (t == null)
             {
                 return NotFound();
             }
-            return Ok(customersList.Remove(t));
+           
+          return Ok(context.customersList.Remove(t));
         }
     }
 }

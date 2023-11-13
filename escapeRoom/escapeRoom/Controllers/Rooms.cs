@@ -1,7 +1,8 @@
 ﻿using escapeRoom.Entities;
 using Microsoft.AspNetCore.Mvc;
-
 using System.Collections;
+using System.Xml.Serialization;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,22 +13,24 @@ namespace escapeRoom.Controllers
     public class Rooms : ControllerBase
     {
 
-        public static List<Room_class> roomsList = new List<Room_class>() { 
-        new Room_class(10,"Kind Shlomo",true),new Room_class(20,"Prag room",false),new Room_class(30,"Zofen",true),new Room_class(40,"Hayara",true)
-        };
+        private DataContext context;
+        public Rooms(DataContext context)
+        {
+            this.context = context;
+        }
 
         // GET: api/<Rooms>
         [HttpGet]
         public List<Room_class> Get()
         {
-            return roomsList;
+            return context.roomsList;
         }
 
         // GET api/<Rooms>/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            Room_class room = roomsList.Find(x => x.Id == id);
+            Room_class room = context.roomsList.Find(x => x.Id == id);
             if (room == null)
             {
                 return NotFound();
@@ -39,14 +42,14 @@ namespace escapeRoom.Controllers
         [HttpPost]
         public void Post([FromBody] Room_class value)
         {
-            roomsList.Add(value);
+            context.roomsList.Add(value);
         }
 
         // PUT api/<Rooms>/5
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Room_class value)
         {
-            Room_class update = roomsList.Find(x => x.Id == id);
+            Room_class update = context.roomsList.Find(x => x.Id == id);
             if (update == null)
             {
                 return NotFound();
@@ -61,7 +64,7 @@ namespace escapeRoom.Controllers
         [HttpPut("{id},{status}")]
         public ActionResult Status(bool status, [FromBody] int id)
         {
-            Room_class st = roomsList.Find(x => x.Id == id);
+            Room_class st = context.roomsList.Find(x => x.Id == id);
             if (st == null)
             {
                 return NotFound();
